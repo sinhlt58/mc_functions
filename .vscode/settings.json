@@ -1,0 +1,9 @@
+{
+    "python.pythonPath": "d:\\editting\\mc_functions\\env\\Scripts\\python.exe",
+    "python.linting.flake8Enabled": false,
+    "python.linting.pycodestyleEnabled": true,
+    "python.linting.enabled": false,
+    "python.linting.pydocstyleArgs": [
+        "--max-line-length=200"
+    ],
+}
