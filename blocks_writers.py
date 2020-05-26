@@ -20,10 +20,11 @@ def write_command_blocks(blocks: CommandBlock):
     #    |                      |<-<-<-^
     #    |________ -z(north)    ->->->|
 
+    plane_size = max_z_size * max_x_size
     for i, block in enumerate(blocks):
-        z_col_idx = i % max_z_size
-        x_col_idx = i // max_z_size
-        y_col_idx = i // (max_z_size * max_x_size)
+        z_col_idx = (i % plane_size) % max_z_size
+        x_col_idx = (i % plane_size) // max_z_size
+        y_col_idx = i // plane_size
 
         is_y_even = y_col_idx % 2 == 0
         is_x_even = x_col_idx % 2 == 0
