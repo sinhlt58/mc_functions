@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
         if args.function:
             funcs_to_run = [args.function]
-        else:  # Run all function
+        else:  # Run all functions
             funcs_to_run = [f[0] for f in inspect.getmembers(m, inspect.isfunction)]
 
         scene_name = module_path.split(".")[-1]

@@ -15,10 +15,10 @@ class AnimatedMovingCube(object):
         out_file,
         tick_rate=10,
         is_stay=False,
-        velocity=np.array(0, 0, 0),
+        velocity=[0, 0, 0],
     ):
-        self.init_lower_right = np.array(init_lower_right)
-        self.init_upper_left = np.array(init_upper_left)
+        self.init_lower_right = np.array(init_lower_right, dtype=int)
+        self.init_upper_left = np.array(init_upper_left,  dtype=int)
 
         # Previous positions
         self.prev_lower_right = self.init_lower_right
@@ -41,7 +41,7 @@ class AnimatedMovingCube(object):
         self.num_frames = self.run_ticks // tick_rate
 
         self.out_file = out_file
-        self.velocity = velocity
+        self.velocity = np.array(velocity, dtype=int)
         self.is_stay = is_stay
 
     def render(self):
@@ -74,8 +74,8 @@ class AnimatedMovingCube(object):
 
         # Update positions if not is_stay
         if not self.is_stay:
-            self.prev_lower_right = self.curr_lower_right
-            self.prev_upper_left = self.prev_upper_left
+            self.prev_lower_right = self.curr_lower_right.copy()
+            self.prev_upper_left = self.curr_upper_left.copy()
 
             self.curr_lower_right += self.velocity
             self.curr_upper_left += self.velocity
@@ -91,9 +91,7 @@ class AnimatedMovingCube(object):
         render_position = True
 
         # Only render position if something changes
-        if render_position and (self.curr_lower_right != self.prev_lower_right or \
-            self.curr_upper_left  != self.prev_upper_left):
-
+        if render_position and not self.is_stay:
             begin_str = pos_to_str(self.prev_lower_right, POS_ABSOLUTE)
             end_str = pos_to_str(self.prev_upper_left, POS_ABSOLUTE)
             des_str = pos_to_str(self.curr_lower_right, POS_ABSOLUTE)
