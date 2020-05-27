@@ -3,7 +3,7 @@ from constants import *
 from utils import *
 
 
-def write_command_blocks(blocks: CommandBlock):
+def write_command_blocks(out_file, blocks: CommandBlock):
     """
         Write a list set minecraft:command_block commands
         World relative to the executor's position
@@ -11,6 +11,8 @@ def write_command_blocks(blocks: CommandBlock):
 
         maximum size: 4 chunks (16*16*4*200 blocks)
     """
+    f = open(out_file, "w", encoding="utf_8_sig")
+
     max_z_size = 4 * 2  # 2 chunks
     max_x_size = 4 * 2  # 2 chunks
     max_y_size = 200
@@ -19,6 +21,8 @@ def write_command_blocks(blocks: CommandBlock):
     #    |                      ^->->->
     #    |                      |<-<-<-^
     #    |________ -z(north)    ->->->|
+
+    commands_count = 0
 
     plane_size = max_z_size * max_x_size
     for i, block in enumerate(blocks):
@@ -50,7 +54,6 @@ def write_command_blocks(blocks: CommandBlock):
             if not is_y_even and is_x_even:
                 facing = EAST
 
-
         # Overwrite for the first block in z-x plane case
         if z_col_idx == 0 and x_col_idx == 0 and not is_y_even:
             facing = UP
@@ -61,10 +64,23 @@ def write_command_blocks(blocks: CommandBlock):
             facing = UP
             is_end_plane = True
 
-        print(f"(x: {x_col_idx}, y: {y_col_idx}, z: {z_col_idx} - {facing}")
+        print(f"(x: {-x_col_idx}, y: {y_col_idx}, z: {-z_col_idx} - {facing}")
         if is_end_plane:
             print("----------------------------")
 
+        # Write to file
+        # We negative x and z to write in west and north in Minecraft
+        commands = block.to_mc_commands([-x_col_idx, y_col_idx, -z_col_idx], facing, POS_RELATIVE_W)
+        for c in commands:
+            f.write(f"{c}\n")
+        commands_count += len(commands)
+
+    f.close()
+    print(f"Write {len(blocks)} blocks, {commands_count} commands to file {out_file}")
+
 
 if __name__ == "__main__":
-    write_command_blocks([CommandBlock("hello") for i in range(0, 1000)])
+    write_command_blocks(
+        "test_block_writers.mcfunction",
+        [CommandBlock("hello") if i % 2 == 0 else CommandBlockDelay(30) for i in range(0, 1000)]
+    )
