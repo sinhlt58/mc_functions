@@ -15,7 +15,7 @@ class AnimatedMovingCube(object):
         out_file,
         tick_rate=10,
         is_stay=False,
-        velocity=np.array(0, 0, 0)
+        velocity=np.array(0, 0, 0),
     ):
         self.init_lower_right = np.array(init_lower_right)
         self.init_upper_left = np.array(init_upper_left)

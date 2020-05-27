@@ -1,4 +1,4 @@
-from utils import *
+from aniblock.utils import *
 
 
 def to_mc(out_file):
