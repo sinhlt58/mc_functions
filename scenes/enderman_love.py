@@ -1,7 +1,7 @@
 from aniblock.cubes import *
 
 
-def enderman(datapack_dir: str, scene_dir: str):
+def render_enderman(datapack_dir: str, scene_dir: str):
     enderman_cube = AnimatedMovingCube(
         init_lower_right=[1, 1, 1],
         init_upper_left=[5, 5, 5],
@@ -14,5 +14,5 @@ def enderman(datapack_dir: str, scene_dir: str):
     enderman_cube.render()
 
 
-def creeper(datapack_dir: str, scene_dir: str):
+def render_creeper(datapack_dir: str, scene_dir: str):
     print(f"f2 {datapack_dir}, {scene_dir}")
