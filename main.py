@@ -1,6 +1,7 @@
 import argparse
 import importlib
 import inspect
+from pathlib import Path
 
 
 if __name__ == "__main__":
@@ -23,6 +24,11 @@ if __name__ == "__main__":
         else:  # Run all function
             funcs_to_run = [f[0] for f in inspect.getmembers(m, inspect.isfunction)]
 
+        scene_name = module_path.split(".")[-1]
+        datapacks_dir = "./datapacks/sinhblack/data"
+        scene_dir = f"{datapacks_dir}/aniblock/functions/{scene_name}"
+        Path(scene_dir).mkdir(parents=True, exist_ok=True)
+
         for f in funcs_to_run:
-            getattr(m, f)("./datapacks/sinhblack/data")
+            getattr(m, f)(datapacks_dir, scene_dir)
             print(f"Run function {f}")
