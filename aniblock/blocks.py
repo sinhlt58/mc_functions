@@ -1,6 +1,6 @@
 
-from constants import *
-from utils import *
+from aniblock.constants import *
+from aniblock.utils import *
 
 
 class Block:

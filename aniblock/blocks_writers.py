@@ -1,6 +1,6 @@
-from blocks import *
-from constants import *
-from utils import *
+from aniblock.blocks import *
+from aniblock.constants import *
+from aniblock.utils import *
 
 
 def write_command_blocks(out_file, blocks: CommandBlock):
