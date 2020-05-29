@@ -11,7 +11,7 @@ def write_command_blocks(out_file, blocks: CommandBlock):
 
         maximum size: 4 chunks (16*16*4*200 blocks)
     """
-    f = open(out_file, "w", encoding="utf_8_sig")
+    f = open(out_file, "w")
 
     max_z_size = 16 * 2  # 2 chunks
     max_x_size = 16 * 2  # 2 chunks
@@ -70,7 +70,7 @@ def write_command_blocks(out_file, blocks: CommandBlock):
 
         # Write to file
         # We negative x and z to write in west and north in Minecraft
-        commands = block.to_mc_commands([-x_col_idx, y_col_idx-1, -z_col_idx-1], facing, POS_RELATIVE_W)
+        commands = block.to_mc_commands([-x_col_idx, y_col_idx, -z_col_idx-1], facing, POS_RELATIVE_W)
         for c in commands:
             f.write(f"{c}\n")
         commands_count += len(commands)
