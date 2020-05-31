@@ -64,7 +64,7 @@ def write_command_blocks(out_file, blocks: CommandBlock):
             facing = UP
             is_end_plane = True
 
-        print(f"(x: {-x_col_idx}, y: {y_col_idx}, z: {-z_col_idx} - {facing}")
+        # print(f"(x: {-x_col_idx}, y: {y_col_idx}, z: {-z_col_idx} - {facing}")
         if is_end_plane:
             print("----------------------------")
 

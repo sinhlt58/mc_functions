@@ -3,6 +3,11 @@ import numpy as np
 from aniblock.constants import *
 
 
+def do_render_cubes(cubes):
+    for c in cubes:
+        c.render()
+
+
 def pos_to_str(pos, relative=POS_RELATIVE_W):
     if relative == POS_RELATIVE_W:
         return f"~{pos[0]} ~{pos[1]} ~{pos[2]}"

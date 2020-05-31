@@ -5,18 +5,34 @@ from aniblock.utils import *
 from aniblock.blocks_writers import *
 
 
-class AnimatedMovingCube(object):
+class GeneralCube(object):
+
+    def __init__(self, out_file):
+        self.out_file = out_file
+        # Command blocks contain rendering commands
+        self.blocks = []
+
+    def render_blocks(self):
+        if self.blocks:
+            write_command_blocks(self.out_file, self.blocks)
+        else:
+            print("Nothing to render")
+
+
+class AnimatedMovingCube(GeneralCube):
 
     def __init__(
         self,
         init_lower_right,
         init_upper_left,
-        run_seconds,
+        run_steps,
+        tick_rate,
         out_file,
-        tick_rate=10,
         is_stay=False,
         velocity=[0, 0, 0],
     ):
+        super().__init__(out_file)
+
         self.init_lower_right = np.array(init_lower_right, dtype=int)
         self.init_upper_left = np.array(init_upper_left,  dtype=int)
 
@@ -28,19 +44,12 @@ class AnimatedMovingCube(object):
         self.curr_lower_right = self.init_lower_right
         self.curr_upper_left = self.init_upper_left
 
-        # Running time in seconds
-        self.run_seconds = run_seconds
+        # Number of running steps
+        self.run_steps = run_steps
 
         # Number of ticks between two frames
         self.tick_rate = tick_rate
 
-        # Running time in ticks (1 sec = 20 ticks)
-        self.run_ticks = run_seconds * 20
-
-        # Calculate total number of frames need to render
-        self.num_frames = self.run_ticks // tick_rate
-
-        self.out_file = out_file
         self.velocity = np.array(velocity, dtype=int)
         self.is_stay = is_stay
 
@@ -48,22 +57,17 @@ class AnimatedMovingCube(object):
         """
             Render to Minecraft commands
         """
-        # Command blocks contain rendering commands
-        blocks = []
-
         # For each frame, calculate the position, frame index in the animation frames
         # and then render
-        for i in range(0, self.num_frames):
+        for i in range(0, self.run_steps):
             # Render the current state
-            blocks += self.frame_render(i)
+            self.blocks += self.frame_render(i)
             # Update to change state
             self.frame_update(i)
 
-        if blocks:
-            write_command_blocks(self.out_file, blocks)
-            print(f"Done render {self.num_frames} frames")
-        else:
-            print("Nothing to render")
+        self.render_blocks()
+        if self.blocks:
+            print(f"Render {self.run_steps} frames")
 
     def frame_update(self, frame_index):
         """
@@ -77,6 +81,8 @@ class AnimatedMovingCube(object):
             self.prev_lower_right = self.curr_lower_right.copy()
             self.prev_upper_left = self.curr_upper_left.copy()
 
+            print(f"frame_index: {frame_index}, curr_lower_right: {self.curr_lower_right}, curr_upper_left: {self.curr_upper_left}")
+
             self.curr_lower_right += self.velocity
             self.curr_upper_left += self.velocity
 
@@ -86,6 +92,7 @@ class AnimatedMovingCube(object):
         """
         blocks = []
 
+        # TODO: Animation later
         # Render animation frame if there is any change in the animation
         # frame index if so, we don't need to render position (we copy from animation frames).
         render_position = True
@@ -107,3 +114,81 @@ class AnimatedMovingCube(object):
             )
 
         return blocks
+
+
+class ReversedDestroyCube(GeneralCube):
+
+        def __init__(
+            self,
+            init_lower_right,
+            init_upper_left,
+            out_file,
+            tick_rate=10,
+            first_delay_ticks=0,
+            delete_x_size=None,
+            delete_y_size=None,
+            delete_z_size=None,
+        ):
+            super().__init__(out_file)
+
+            self.init_lower_right = np.array(init_lower_right, dtype=int)
+            self.init_upper_left = np.array(init_upper_left,  dtype=int)
+
+            if delete_x_size is None:
+                delete_x_size = abs(self.init_upper_left[0] - self.init_lower_right[0]) + 1
+            if delete_y_size is None:
+                delete_y_size = abs(self.init_upper_left[1] - self.init_lower_right[1]) + 1
+            if delete_z_size is None:
+                delete_z_size = abs(self.init_upper_left[2] - self.init_lower_right[2]) + 1
+
+            self.delete_x_size = delete_x_size
+            self.delete_y_size = delete_y_size
+            self.delete_z_size = delete_z_size
+
+
+            # Number of ticks between two frames
+            self.tick_rate = tick_rate
+            self.first_delay_ticks = first_delay_ticks
+
+        def _get_num_parts(self, n, m):
+            return n // m + int(n % m != 0)
+
+        def _get_lower_upper(self, i, size, min_l, max_u):
+            lower = i * size + min_l
+            upper = lower + size - 1
+            if upper > max_u:
+                upper = max_u
+            return lower, upper
+
+        def render(self):
+            first_pos = self.init_lower_right
+            second_pos = self.init_upper_left
+
+            num_y_parts = self._get_num_parts(
+                abs(second_pos[1] - first_pos[1]) + 1, self.delete_y_size)
+            num_x_parts = self._get_num_parts(
+                abs(second_pos[0] - first_pos[0]) + 1, self.delete_x_size)
+            num_z_parts = self._get_num_parts(
+                abs(second_pos[2] - first_pos[2]) + 1, self.delete_z_size)
+
+            for yi in reversed(range(0, num_y_parts)):
+                lower_y, upper_y = self._get_lower_upper(yi, self.delete_y_size, first_pos[1], second_pos[1])
+                for xi in range(0, num_x_parts):
+                    lower_x, upper_x = self._get_lower_upper(xi, self.delete_x_size, first_pos[0], second_pos[0])
+                    for zi in range(0, num_z_parts):
+                        lower_z, upper_z = self._get_lower_upper(zi, self.delete_z_size, first_pos[2], second_pos[2])
+
+                        if self.first_delay_ticks > 0:
+                            self.blocks.extend([
+                                CommandBlock(f"say First delay {self.first_delay_ticks} ticks"),
+                                CommandBlockDelay(delay_ticks=self.first_delay_ticks),
+                            ])
+                            self.first_delay_ticks = 0
+
+                        self.blocks.extend([
+                            CommandBlock(f"fill {lower_x} {lower_y} {lower_z} {upper_x} {upper_y} {upper_z} minecraft:air destroy"),
+                            CommandBlock("kill @e[type=minecraft:item]", "chain_command_block"),
+                            CommandBlockDelay(delay_ticks=self.tick_rate),
+                        ])
+
+            self.render_blocks()

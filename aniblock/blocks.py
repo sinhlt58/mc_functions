@@ -9,13 +9,14 @@ class Block:
 
 class CommandBlock(Block):
 
-    def __init__(self, command):
+    def __init__(self, command, type="command_block"):
         self.command = command
+        self.type = type
 
     def to_mc_commands(self, pos, facing, relative=POS_RELATIVE_W):
         pos_str = pos_to_str(pos, relative)
         return [
-            f"setblock {pos_str} minecraft:command_block[facing={facing}]",
+            f"setblock {pos_str} minecraft:{self.type}[facing={facing}]",
             f"data modify block {pos_str} Command set value \"{self.command}\""
         ]
 
