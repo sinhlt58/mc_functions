@@ -33,6 +33,10 @@ def write_command_blocks(out_file, blocks: CommandBlock):
         is_y_even = y_col_idx % 2 == 0
         is_x_even = x_col_idx % 2 == 0
 
+        # Fliping running z direction -> or <-
+        if (is_y_even and not is_x_even) or (not is_y_even and is_x_even):
+            z_col_idx = max_z_size - 1 - z_col_idx
+
         # IMPORTANT: the order is important here
         # Normal case
         if is_x_even == is_y_even:
@@ -77,6 +81,34 @@ def write_command_blocks(out_file, blocks: CommandBlock):
 
     f.close()
     print(f"Write {len(blocks)} blocks, {commands_count} commands to file {out_file}")
+
+
+def do_render_cubes(cubes):
+    """
+        Write cubes to theirs files
+    """
+
+    for c in cubes:
+        c.render()
+
+
+def do_render_cubes_together(cubes, out_file, delay_ticks=0):
+    """
+        Write multiple cubes to one files
+    """
+
+    blocks = []
+
+    if delay_ticks > 0:
+        blocks.extend([
+            CommandBlock(f"say "),
+            CommandBlockDelay(delay_ticks=delay_ticks),
+        ])
+
+    for c in cubes:
+        blocks += c.blocks
+
+    write_command_blocks(out_file, blocks)
 
 
 if __name__ == "__main__":

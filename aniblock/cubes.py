@@ -180,7 +180,7 @@ class ReversedDestroyCube(GeneralCube):
 
                         if self.first_delay_ticks > 0:
                             self.blocks.extend([
-                                CommandBlock(f"say First delay {self.first_delay_ticks} ticks"),
+                                CommandBlock(f"say "),
                                 CommandBlockDelay(delay_ticks=self.first_delay_ticks),
                             ])
                             self.first_delay_ticks = 0

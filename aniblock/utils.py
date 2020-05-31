@@ -1,11 +1,7 @@
 import numpy as np
 
 from aniblock.constants import *
-
-
-def do_render_cubes(cubes):
-    for c in cubes:
-        c.render()
+from aniblock.blocks import *
 
 
 def pos_to_str(pos, relative=POS_RELATIVE_W):

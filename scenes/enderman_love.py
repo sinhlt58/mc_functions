@@ -1,5 +1,5 @@
 from aniblock.cubes import *
-from aniblock.utils import *
+from aniblock.blocks_writers import *
 
 
 def render_enderman(datapack_dir: str, scene_dir: str):
@@ -18,15 +18,15 @@ def render_enderman(datapack_dir: str, scene_dir: str):
             init_upper_left=[-4, 22, 98],
             tick_rate=10,
             out_file=f"{scene_dir}/delete_child_sheep.mcfunction",
-            first_delay_ticks=20,
-            delete_y_size=4,
+            first_delay_ticks=40,
+            delete_y_size=1,
         ),
         ReversedDestroyCube(
             init_lower_right=[17, 31, 95],
             init_upper_left=[26, 38, 95],
             tick_rate=10,
             out_file=f"{scene_dir}/delete_sheep_heart.mcfunction",
-            first_delay_ticks=20,
+            first_delay_ticks=40,
             delete_y_size=1,
         ),
         AnimatedMovingCube(
@@ -52,7 +52,7 @@ def render_enderman(datapack_dir: str, scene_dir: str):
             init_upper_left=[43, 38, 95],
             tick_rate=10,
             out_file=f"{scene_dir}/delete_enderman_heart.mcfunction",
-            first_delay_ticks=20,
+            first_delay_ticks=40,
             delete_y_size=1,
         ),
         AnimatedMovingCube(
@@ -63,10 +63,19 @@ def render_enderman(datapack_dir: str, scene_dir: str):
             out_file=f"{scene_dir}/move_enderman_backward.mcfunction",
             is_stay=False,
             velocity=[3, 0, 0]
-        )
+        ),
+        ReversedDestroyCube(
+            init_lower_right=[70, 4, 86],
+            init_upper_left=[84, 27, 101],
+            tick_rate=10,
+            out_file=f"{scene_dir}/delete_enderman.mcfunction",
+            first_delay_ticks=40,
+            delete_y_size=1,
+        ),
     ]
-
+    # 70 4 86 84 27 101
     do_render_cubes(cubes)
+    do_render_cubes_together(cubes, f"{scene_dir}/full.mcfunction", delay_ticks=100)
 
 
 def render_creeper(datapack_dir: str, scene_dir: str):
