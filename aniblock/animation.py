@@ -24,7 +24,7 @@ class Animation(object):
         self.frame_x_size = abs(init_upper_left[0] - init_lower_right[0])
         self.frame_z_size = abs(init_upper_left[2] - init_lower_right[2])
 
-    def get_frame(self, frame_index):
+    def get_frame_position(self, frame_index):
         """
             Return the cube positions of the animation frame given the frame_index
         """

@@ -30,6 +30,7 @@ class AnimatedMovingCube(GeneralCube):
         out_file,
         is_stay=False,
         velocity=[0, 0, 0],
+        animation=None,
     ):
         super().__init__(out_file)
 
@@ -52,6 +53,8 @@ class AnimatedMovingCube(GeneralCube):
 
         self.velocity = np.array(velocity, dtype=int)
         self.is_stay = is_stay
+
+        self.animation = animation
 
     def render(self):
         """
@@ -96,6 +99,15 @@ class AnimatedMovingCube(GeneralCube):
         # Render animation frame if there is any change in the animation
         # frame index if so, we don't need to render position (we copy from animation frames).
         render_position = True
+        if self.animation:
+            begin_pos, end_pos = animation.get_frame_position(frame_index)
+            begin_str = pos_to_str(begin_pos, POS_ABSOLUTE)
+            end_str = pos_to_str(end_pos, POS_ABSOLUTE)
+            des_str = pos_to_str(self.curr_lower_right, POS_ABSOLUTE)
+
+            # TODO: add command blocks here
+
+            render_position = False
 
 
         # Only render position if something changes
