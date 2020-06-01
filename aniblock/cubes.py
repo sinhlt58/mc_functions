@@ -97,6 +97,7 @@ class AnimatedMovingCube(GeneralCube):
         # frame index if so, we don't need to render position (we copy from animation frames).
         render_position = True
 
+
         # Only render position if something changes
         if render_position and not self.is_stay:
             begin_str = pos_to_str(self.prev_lower_right, POS_ABSOLUTE)
