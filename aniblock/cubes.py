@@ -31,6 +31,7 @@ class AnimatedMovingCube(GeneralCube):
         is_stay=False,
         velocity=[0, 0, 0],
         animation=None,
+        replace_diamond_block_with_air=False,
     ):
         super().__init__(out_file)
 
@@ -55,6 +56,8 @@ class AnimatedMovingCube(GeneralCube):
         self.is_stay = is_stay
 
         self.animation = animation
+        # Clear frame diamond blocks sketch
+        self.replace_diamond_block_with_air = replace_diamond_block_with_air
 
     def render(self):
         """
@@ -95,17 +98,23 @@ class AnimatedMovingCube(GeneralCube):
         """
         blocks = []
 
-        # TODO: Animation later
         # Render animation frame if there is any change in the animation
         # frame index if so, we don't need to render position (we copy from animation frames).
         render_position = True
         if self.animation:
-            begin_pos, end_pos = animation.get_frame_position(frame_index)
+            # Calculate animation frame
+            begin_pos, end_pos = self.animation.get_frame_position(frame_index)
             begin_str = pos_to_str(begin_pos, POS_ABSOLUTE)
             end_str = pos_to_str(end_pos, POS_ABSOLUTE)
             des_str = pos_to_str(self.curr_lower_right, POS_ABSOLUTE)
 
-            # TODO: add command blocks here
+            # Add command blocks here
+            prev_begin_str = pos_to_str(self.prev_lower_right, POS_ABSOLUTE)
+            prev_end_str = pos_to_str(self.prev_upper_left, POS_ABSOLUTE)
+            blocks.extend([
+                CommandBlock(f"fill {prev_begin_str} {prev_end_str} minecraft:air"), # remove previous frame
+                CommandBlock(f"clone {begin_str} {end_str} {des_str} replace force", type="chain_command_block"), # copy from animation frame to current position
+            ])
 
             render_position = False
 
@@ -122,6 +131,14 @@ class AnimatedMovingCube(GeneralCube):
 
         # Add delay
         if blocks:
+            # Clear frame diamond blocks sketch
+            if self.replace_diamond_block_with_air:
+                begin_str = pos_to_str(self.curr_lower_right, POS_ABSOLUTE)
+                end_str = pos_to_str(self.curr_upper_left, POS_ABSOLUTE)
+                blocks.append(
+                    CommandBlock(f"fill {begin_str} {end_str} minecraft:air replace minecraft:diamond_block", "chain_command_block")
+                )
+
             blocks.append(
                 CommandBlockDelay(delay_ticks=self.tick_rate)
             )

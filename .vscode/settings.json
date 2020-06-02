@@ -6,4 +6,19 @@
     "python.linting.pydocstyleArgs": [
         "--max-line-length=200"
     ],
+    "settings": {
+        "files.exclude": {
+            "**/.git": true,         // this is a default value
+            "**/.DS_Store": true,    // this is a default value
+
+            "**/node_modules": true, // this excludes all folders
+                                    // named "node_modules" from
+                                    // the explore tree
+
+            // alternative version
+            "node_modules": true,
+            "env": true                        // this excludes the folder
+                                    // only from the root o            // your workspace
+        }
+    }
 }
