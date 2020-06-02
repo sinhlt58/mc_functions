@@ -12,6 +12,7 @@ def render_creeper(datapack_dir: str, scene_dir: str):
         out_file=f"{scene_dir}/creeper.mcfunction",
         is_stay=True,
         velocity=[0, 0, 0],
+        run_seconds=15,
         animation=Animation(
             init_lower_right=[-23, 88, 145],
             init_upper_left=[-4, 108, 145],

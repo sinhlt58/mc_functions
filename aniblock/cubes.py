@@ -30,6 +30,7 @@ class AnimatedMovingCube(GeneralCube):
         out_file,
         is_stay=False,
         velocity=[0, 0, 0],
+        run_seconds=None,
         animation=None,
         replace_diamond_block_with_air=False,
     ):
@@ -54,6 +55,9 @@ class AnimatedMovingCube(GeneralCube):
 
         self.velocity = np.array(velocity, dtype=int)
         self.is_stay = is_stay
+
+        if run_seconds:
+            self.run_steps = run_seconds * 20 // self.tick_rate
 
         self.animation = animation
         # Clear frame diamond blocks sketch
