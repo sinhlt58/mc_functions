@@ -74,7 +74,8 @@ def write_command_blocks(out_file, blocks: CommandBlock):
 
         # Write to file
         # We negative x and z to write in west and north in Minecraft
-        commands = block.to_mc_commands([-x_col_idx, y_col_idx, -z_col_idx-1], facing, POS_RELATIVE_W)
+        pos = [-x_col_idx, y_col_idx, -z_col_idx-1]
+        commands = block.to_mc_commands(pos, facing, POS_RELATIVE_W)
         for c in commands:
             f.write(f"{c}\n")
         commands_count += len(commands)
@@ -92,9 +93,9 @@ def do_render_cubes(cubes):
         c.render()
 
 
-def do_render_cubes_together(cubes, out_file, delay_ticks=0):
+def get_blocks_from_cubes(cubes, delay_ticks=0, render_before=False, loop_pos=False):
     """
-        Write multiple cubes to one files
+        Get a list of blocks from a list of cubes
     """
 
     blocks = []
@@ -106,7 +107,26 @@ def do_render_cubes_together(cubes, out_file, delay_ticks=0):
         ])
 
     for c in cubes:
+        if render_before:
+            c.render()
         blocks += c.blocks
+
+    if loop_pos:
+        pos_str = pos_to_str(loop_pos)
+
+        blocks.extend([
+            CommandBlock(f"setblock {pos_str} minecraft:air"),
+            CommandBlock(f"setblock {pos_str} minecraft:redstone_block", type="chain_command_block"),
+        ])
+
+    return blocks
+
+
+def do_render_cubes_together(cubes, out_file, delay_ticks=0, render_before=False, loop_pos=None):
+    """
+        Write multiple cubes to one files
+    """
+    blocks = get_blocks_from_cubes(cubes, delay_ticks, render_before, loop_pos)
 
     write_command_blocks(out_file, blocks)
 
