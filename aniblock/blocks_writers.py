@@ -112,7 +112,7 @@ def get_blocks_from_cubes(cubes, delay_ticks=0, render_before=False, loop_pos=Fa
         blocks += c.blocks
 
     if loop_pos:
-        pos_str = pos_to_str(loop_pos)
+        pos_str = pos_to_str(loop_pos, POS_ABSOLUTE)
 
         blocks.extend([
             CommandBlock(f"setblock {pos_str} minecraft:air"),

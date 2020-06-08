@@ -24,4 +24,10 @@ def render_creeper(datapack_dir: str, scene_dir: str):
         replace_diamond_block_with_air=True,
     )
 
-    cube.render()
+    do_render_cubes_together(
+        [cube],
+        out_file=f"{scene_dir}/creeper.mcfunction",
+        delay_ticks=0,
+        render_before=True,
+        loop_pos=[16, 90, 144],
+    )

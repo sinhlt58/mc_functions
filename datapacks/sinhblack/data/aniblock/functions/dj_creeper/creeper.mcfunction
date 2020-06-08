@@ -238,3 +238,7 @@ setblock ~-3 ~0 ~-10 minecraft:chain_command_block[facing=south]
 data modify block ~-3 ~0 ~-10 Command set value "fill -19 63 242 0 83 242 minecraft:air replace minecraft:diamond_block"
 setblock ~-3 ~0 ~-9 minecraft:chain_command_block[facing=south]
 data modify block ~-3 ~0 ~-9 Command set value "summon minecraft:area_effect_cloud ~0 ~0 ~1 {Tags:[\"TickCounter\"],Age:-10}"
+setblock ~-3 ~0 ~-8 minecraft:command_block[facing=south]
+data modify block ~-3 ~0 ~-8 Command set value "setblock 16 90 144 minecraft:air"
+setblock ~-3 ~0 ~-7 minecraft:chain_command_block[facing=south]
+data modify block ~-3 ~0 ~-7 Command set value "setblock 16 90 144 minecraft:redstone_block"
